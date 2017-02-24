@@ -1,20 +1,17 @@
-solution "SVNDownloader"
+solution "AutoGIT"
 
-   language "C++"
-   targetdir "bin/%{cfg.buildcfg}"
-   libdirs { "../libs/**" }
-   includedirs { "../include/" }
-
-   configurations
-	{
-		"Release"
-	}
+  configurations	{"Release"}
 
 	configuration "Release"
 		defines { "NDEBUG" }
 		flags{ "Optimize", "FloatFast" }
 
-    project "SVNDownloader"
-      defines { "GMMODULE" }
-      files { "src/**.*", "../include/**.*" }
+    project "AutoGIT"
       kind "SharedLib"
+      language "C++"
+      defines { "GMMODULE" }
+      files { "src/**.*", "include/**.*"}
+      libdirs { "libs" }
+
+      targetdir "bin/%{cfg.buildcfg}"
+      includedirs { "../include/**" }
