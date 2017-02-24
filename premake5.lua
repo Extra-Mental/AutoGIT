@@ -3,7 +3,7 @@ solution "SVNDownloader"
    language "C++"
    targetdir "bin/%{cfg.buildcfg}"
    libdirs { "../libs/**" }
-   includedirs { "../include/**" }
+   includedirs { "../include/" }
 
    configurations
 	{
