@@ -1,9 +1,9 @@
 #include "GarrysMod/Lua/Interface.h"
-#include <stdio.h>
+
 #include <git2.h>
 #include <git2/clone.h>
-#include <stdlib.h>
-#include <string.h>
+
+#include <string>
 //#ifndef _WIN32
 //# include <pthread.h>
 //# include <unistd.h>
