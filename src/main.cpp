@@ -11,47 +11,67 @@
 
 using namespace GarrysMod::Lua;
 
+// print to console
+void luaPrint(lua_State* state , char* str)
+{
+	LUA->PushSpecial(GarrysMod::Lua::SPECIAL_GLOB); // get the globalle cooleo beans table on here
+
+		LUA->GetField(-1, "print"); // giiivee meeeeeee the print function
+		LUA->PushString(str); // push the string with it as well
+		LUA->Call(1, 0); // call that! with ONE argument and ZERO return values
+
+	LUA->Pop(); // now fock off!
+}
+
+// runstring
+void luaRunStr(lua_State* state, char* str)
+{
+	LUA->PushSpecial(GarrysMod::Lua::SPECIAL_GLOB); // get the globalle cooleo beans table on here
+
+	LUA->GetField(-1, "RunString"); // giiivee meeeeeee the print function
+	LUA->PushString(str); // push the string with it as well
+	LUA->Call(1, 0); // call that! with ONE argument and ZERO return values
+
+	LUA->Pop(); // now fock off!
+}
+
 int cloneRepo(lua_State* state){
 
+	// make sure we get 2 strings
 	LUA->CheckType(1, GarrysMod::Lua::Type::STRING);
 	LUA->CheckType(2, GarrysMod::Lua::Type::STRING);
 
+	// sik git sgit
 	git_repository *repo = NULL;
 	const char* url = LUA->GetString(1);
 	const char* path = LUA->GetString(1);
 
-	int error = git_clone(&repo, url, path, NULL);
-
-	LUA->PushSpecial(GarrysMod::Lua::SPECIAL_GLOB); // Push the global table
-	LUA->GetField(-1, "print"); // Get the print function
-	LUA->PushNumber(error);
-	LUA->Call(1, 0); // Call the function
-	LUA->Pop();
-
+	int error = git_clone(&repo, url, path, NULL); // clone and store error code
 	
-	return 1;
+	// also im pretty sure that gmod just like sits in the uh gmod folder like 
+	// youd do .\garrysmod\addons\ufap | because is module
+	
+	LUA->PushNumber(error); 	// youre returning 1 and i think its a good idea to 
+						// just return error code to lua and do most of your sgit in lua
+						// ie concommand does cloneRepo(arg1,"sgitsgitsgit")
+	
+	return 1; // Returning one = 1 return value in the luas
 }
+
+
 
 GMOD_MODULE_OPEN()
 {
 
-	LUA->PushSpecial(GarrysMod::Lua::SPECIAL_GLOB); // Push the global table
-	LUA->GetField(-1, "print"); // Get the print function
-	LUA->PushString("AutoGIT Loaded---------------------------------------------------------------------"); // Push our argument
-	LUA->Call(1, 0); // Call the function
-	LUA->Pop(); // Pop the global table off the stack
+	luaPrint(state, "autoGIT Loaded! -------------------");
 
-	//LUA->CreateTable();
-		//LUA->PushSpecial(GarrysMod::Lua::SPECIAL_GLOB); // Push the global table
-		//LUA->PushCFunction(cloneRepo); // Push our function
-		//LUA->SetField(-2, "__cloneRepo"); // Set MyFirstFunction in lua to our C++ function
-		//LUA->Pop(); // Pop the global table off the stackc
-	//metatable = LUA->ReferenceCreate();
 
-	LUA->PushSpecial(GarrysMod::Lua::SPECIAL_GLOB);	// Push global table
-	LUA->PushString("cloneRepo");					// Push Name
-	LUA->PushCFunction(cloneRepo);			// Push function
-	LUA->SetTable(-3);								// Set the table 
+	LUA->PushSpecial( GarrysMod::Lua::SPECIAL_GLOB ); // Push the global table
+		 LUA->PushCFunction( cloneRepo ); // Push our function
+		 LUA->SetField( -3, "cloneRepo" ); // Set MyFirstFunction in lua to our C++ function
+		 //			^^^ might have to be -2 i dunno 
+		 
+	LUA->Pop(); // Pop the global table off the stack							// Set the table 
 
 	return 0;
 }
